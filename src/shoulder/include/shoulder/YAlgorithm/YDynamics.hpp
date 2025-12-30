@@ -22,7 +22,10 @@ namespace Dynamics{
     public:
         // 构造函数
         DynamicsCalculator(double length, double r, double mass){
-            CalMass(length, r, mass);
+            length_ = length;
+            r_ = r;
+            mass_ = mass;
+            CalMass();
             Twist gravityInitial = Twist::Zero();
             gravityInitial(5) = - mass * g;
             gravity_.push_back(gravityInitial);
@@ -33,19 +36,25 @@ namespace Dynamics{
         // 更新力
         void Update(const Motion::TrajectoryGenerator &generator);
 
+        // 获取合力
+        const std::vector<Twist> &GetForce() const{ return force_; }
+        
+        // 获取肌肉力
+        const std::vector<Twist> &GetMuscleForce() const{ return muscleForce_; }
+
     private:
         // 计算广义惯性矩阵
-        inline void CalMass(double length, double r, double mass){
+        inline void CalMass(){
             massMatrix_ = MassMatrix::Zero();
-            massMatrix_(0, 0) = mass * (3 * r * r + 4 * length * length) / 12;
-            massMatrix_(1, 1) = mass * (3 * r * r + 4 * length * length) / 12;
-            massMatrix_(2, 2) = mass * r * r / 2;
+            massMatrix_(0, 0) = mass_ * (3 * r_ * r_ + 4 * length_ * length_) / 12;
+            massMatrix_(1, 1) = mass_ * (3 * r_ * r_ + 4 * length_ * length_) / 12;
+            massMatrix_(2, 2) = mass_ * r_ * r_ / 2;
             for(int i = 3; i < 6; i++)
-                massMatrix_(i, i) = mass;
-            massMatrix_(0, 4) = mass * length / 2;
-            massMatrix_(1, 3) = -mass * length / 2;
-            massMatrix_(3, 1) = -mass * length / 2;
-            massMatrix_(4, 0) = mass * length / 2;
+                massMatrix_(i, i) = mass_;
+            massMatrix_(0, 4) = mass_ * length_ / 2;
+            massMatrix_(1, 3) = -mass_ * length_ / 2;
+            massMatrix_(3, 1) = -mass_ * length_ / 2;
+            massMatrix_(4, 0) = mass_ * length_ / 2;
         }
 
         // 计算惯性系下的重力旋量

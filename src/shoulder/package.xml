@@ -18,6 +18,7 @@
   <depend>tf2_eiegn</depend>
   <depend>urdf</depend>
   <depend>visualization_msgs</depend>
+  <depend>shoulder_msgs</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

@@ -26,6 +26,9 @@ namespace Motion{
             acceleration_.push_back(Twist::Zero());
         }
 
+        TrajectoryGenerator(TrajectoryGenerator& other) = delete;
+        TrajectoryGenerator& operator=(TrajectoryGenerator& other) = delete;
+
         // 更新轨迹
         void Update(double currentTime);
 

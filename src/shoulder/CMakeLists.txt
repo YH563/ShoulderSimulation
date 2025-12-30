@@ -16,6 +16,7 @@ find_package(urdf REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(Eigen3 REQUIRED) 
 find_package(Sophus REQUIRED) 
+find_package(shoulder_msgs REQUIRED)
 
 
 
