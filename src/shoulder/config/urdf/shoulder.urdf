@@ -1,0 +1,79 @@
+<robot name="shoulder">
+    <!-- 定义材料 -->
+    <material name="arm_material">
+        <color rgba="0.3 0.3 0.8 1.0"/>  <!-- 半透明蓝色 -->
+    </material>
+  
+    <material name="joint_material">
+        <color rgba="0.8 0.2 0.2 1.0"/>  <!-- 半透明红色 -->
+    </material>
+
+    <material name="elbow_material">
+        <color rgba="0.3 0.8 0.3 1.0"/>
+    </material>
+
+    <!-- 固定惯性坐标系 -->
+    <link name="world">
+        <inertial>
+            <mass value="0.001"/>
+            <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+        </inertial>
+    </link>
+
+    <!-- 肩关节中心 -->
+    <link name="shoulder_joint">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <sphere radius="0.04"/>
+            </geometry>
+            <material name="joint_material"/>
+        </visual>
+    </link>
+
+    <!-- 大臂 -->
+    <link name="upper_arm">
+        <visual>
+            <origin xyz="0.0 0.0 -0.15" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.025" length="0.3"/>
+            </geometry>
+            <material name="arm_material"/>
+        </visual>
+    </link>
+
+    <!-- 大臂末端 -->
+    <link name="upper_arm_end">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="0.1 0.055 0.04"/>
+            </geometry>
+            <material name="elbow_material"/>
+        </visual>
+        <inertial>
+            <mass value="0.001"/>
+            <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+        </inertial>
+    </link>
+
+    <!-- 关节连接 -->
+    <joint name="world_to_shoulder" type="fixed">
+        <parent link="world"/>
+        <child link="shoulder_joint"/>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    </joint>
+
+    <joint name="shoulder_to_arm" type="fixed">
+        <parent link="shoulder_joint"/>
+        <child link="upper_arm"/>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    </joint>
+
+    <joint name="arm_to_end" type="fixed">
+        <parent link="upper_arm"/>
+        <child link="upper_arm_end"/>
+        <origin xyz="0.0 0.0 -0.3" rpy="0.0 0.0 0.0"/>
+    </joint>
+
+</robot>

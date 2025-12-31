@@ -26,11 +26,11 @@ namespace Motion{
             acceleration_.push_back(Twist::Zero());
         }
 
-        TrajectoryGenerator(TrajectoryGenerator& other) = delete;
-        TrajectoryGenerator& operator=(TrajectoryGenerator& other) = delete;
-
         // 更新轨迹
         void Update(double currentTime);
+
+        // 获取总时间
+        double GetTotalTime() const { return totalTime_; }
 
         // 获取当前位姿
         const Pose& GetCurrentPose() const { return trajectory_.back(); }
