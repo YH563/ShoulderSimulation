@@ -29,4 +29,27 @@ namespace Dynamics{
         Twist muscleForce = force - grivity;
         muscleForce_.push_back(muscleForce);
     }
+
+    inline void DynamicsCalculator::CalMass(){
+        massMatrix_ = MassMatrix::Zero();
+        massMatrix_(0, 0) = mass_ * (3 * r_ * r_ + 4 * length_ * length_) / 12;
+        massMatrix_(1, 1) = mass_ * (3 * r_ * r_ + 4 * length_ * length_) / 12;
+        massMatrix_(2, 2) = mass_ * r_ * r_ / 2;
+        for(int i = 3; i < 6; i++)
+            massMatrix_(i, i) = mass_;
+        massMatrix_(0, 4) = mass_ * length_ / 2;
+        massMatrix_(1, 3) = -mass_ * length_ / 2;
+        massMatrix_(3, 1) = -mass_ * length_ / 2;
+        massMatrix_(4, 0) = mass_ * length_ / 2;
+    }
+
+    inline Twist DynamicsCalculator::CalGravity(const Motion::TrajectoryGenerator &generator){
+        Eigen::Vector3d r_c (0, 0, - length_ / 2);
+        Eigen::Vector3d mg (0, 0, - mass_ * g);
+        Twist gravity = Twist::Zero();
+        Rotation R = generator.GetCurrentPose().rotationMatrix();
+        gravity.head<3>() = (R * r_c).cross(mg);
+        gravity.tail<3>() = mg;
+        return gravity;
+    }
 }

@@ -2,7 +2,7 @@
 
 namespace Motion{
 
-    void TrajectoryGenerator::Update(double currentTime){
+    Pose TrajectoryGenerator::Update(double currentTime){
         assert(currentTime > 0 && "Current time is not in the range of the trajectory!");    
         // 更新时间
         time_.push_back(currentTime);
@@ -21,6 +21,7 @@ namespace Motion{
         // 更新加速度
         double dds = GetS_dot_double(currentTime);
         acceleration_.push_back(tangent * dds);
-    }
 
+        return trajectory_.back();
+    }
 }

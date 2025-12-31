@@ -12,7 +12,6 @@ namespace Shoulder{
     using namespace std::chrono_literals;
     using namespace Dynamics;
     using namespace Motion;
-    using Pose = Sophus::SE3d;
 
     Pose startPose = Pose::exp(Sophus::Vector6d(0, 0, -0.3, 0, 0, 0));
     Pose targetPose = DataType::RandomPose();

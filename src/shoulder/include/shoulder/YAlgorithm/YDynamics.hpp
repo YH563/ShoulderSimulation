@@ -44,29 +44,10 @@ namespace Dynamics{
 
     private:
         // 计算广义惯性矩阵
-        inline void CalMass(){
-            massMatrix_ = MassMatrix::Zero();
-            massMatrix_(0, 0) = mass_ * (3 * r_ * r_ + 4 * length_ * length_) / 12;
-            massMatrix_(1, 1) = mass_ * (3 * r_ * r_ + 4 * length_ * length_) / 12;
-            massMatrix_(2, 2) = mass_ * r_ * r_ / 2;
-            for(int i = 3; i < 6; i++)
-                massMatrix_(i, i) = mass_;
-            massMatrix_(0, 4) = mass_ * length_ / 2;
-            massMatrix_(1, 3) = -mass_ * length_ / 2;
-            massMatrix_(3, 1) = -mass_ * length_ / 2;
-            massMatrix_(4, 0) = mass_ * length_ / 2;
-        }
+        inline void CalMass();
 
         // 计算惯性系下的重力旋量
-        inline Twist CalGravity(const Motion::TrajectoryGenerator &generator){
-            Eigen::Vector3d r_c (0, 0, - length_ / 2);
-            Eigen::Vector3d mg (0, 0, - mass_ * g);
-            Twist gravity = Twist::Zero();
-            Rotation R = generator.GetCurrentPose().rotationMatrix();
-            gravity.head<3>() = (R * r_c).cross(mg);
-            gravity.tail<3>() = mg;
-            return gravity;
-        }
+        inline Twist CalGravity(const Motion::TrajectoryGenerator &generator);
 
         double length_;  // 大臂长度
         double r_;  // 大臂半径

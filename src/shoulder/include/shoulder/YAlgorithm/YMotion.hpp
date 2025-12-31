@@ -27,7 +27,7 @@ namespace Motion{
         }
 
         // 更新轨迹
-        void Update(double currentTime);
+        Pose Update (double currentTime);
 
         // 获取总时间
         double GetTotalTime() const { return totalTime_; }

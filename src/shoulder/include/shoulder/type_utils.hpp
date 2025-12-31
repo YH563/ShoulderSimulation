@@ -15,7 +15,7 @@ namespace DataType{
     // 将末端坐标系下的速度旋量转换为本体坐标系下的速度旋量
     inline Twist End2Body(const Twist& xi){
         Twist xiBody = Twist::Zero();
-        xiBody.block(0, 0, 3, 1) = xi.block(3, 0, 3, 1);
+        xiBody.block(0, 0, 3, 1) = xi.block(3, 0, 3, 1);  // 方便动力学计算
         return xiBody;
     }
 
