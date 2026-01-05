@@ -12,7 +12,7 @@ namespace Dynamics{
         adMatrix ad = adMatrix::Zero();
         ad.block(0 ,0, 3, 3) = Rotation::hat(omega);
         ad.block(3 ,3, 3, 3) = Rotation::hat(omega);
-        Twist forceBody = mass_ * acceleration - ad.transpose() * mass_ * velocity;
+        Twist forceBody = massMatrix_ * acceleration - ad.transpose() * massMatrix_ * velocity;
         
         // 计算惯性系下的合力
         AdMatrix Ad = AdMatrix::Zero();
@@ -30,7 +30,7 @@ namespace Dynamics{
         muscleForce_.push_back(muscleForce);
     }
 
-    inline void DynamicsCalculator::CalMass(){
+    void DynamicsCalculator::CalMass(){
         massMatrix_ = MassMatrix::Zero();
         massMatrix_(0, 0) = mass_ * (3 * r_ * r_ + 4 * length_ * length_) / 12;
         massMatrix_(1, 1) = mass_ * (3 * r_ * r_ + 4 * length_ * length_) / 12;
@@ -42,8 +42,8 @@ namespace Dynamics{
         massMatrix_(3, 1) = -mass_ * length_ / 2;
         massMatrix_(4, 0) = mass_ * length_ / 2;
     }
-
-    inline Twist DynamicsCalculator::CalGravity(const Motion::TrajectoryGenerator &generator){
+    
+    Twist DynamicsCalculator::CalGravity(const Motion::TrajectoryGenerator &generator){
         Eigen::Vector3d r_c (0, 0, - length_ / 2);
         Eigen::Vector3d mg (0, 0, - mass_ * g);
         Twist gravity = Twist::Zero();

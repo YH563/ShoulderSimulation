@@ -1,0 +1,7 @@
+# 请求部分 - C++客户端发送给Python服务端
+string csv_file_path     # CSV文件的完整路径
+---
+# 响应部分 - Python服务端返回给C++客户端
+bool success            # 是否成功
+string message          # 结果信息，如 "Plot saved to /path/image.png"
+string image_path       # 生成的图片路径（可选）

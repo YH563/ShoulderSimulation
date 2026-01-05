@@ -12,13 +12,17 @@
   <depend>eigen3</depend>
   <depend>sophus</depend>
   <depend>rclcpp</depend>
+  <depend>rclpy</depend>
+  <depend>python3-numpy</depend>
+  <depend>python3-matplotlib</depend>
+  <depend>python3-pandas</depend>
   <depend>geometry_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>tf2_ros</depend>
   <depend>tf2_eiegn</depend>
   <depend>urdf</depend>
   <depend>visualization_msgs</depend>
-  <depend>shoulder_msgs</depend>
+  <depend>wrench_interfaces</depend> 
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

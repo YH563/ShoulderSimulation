@@ -44,10 +44,10 @@ namespace Dynamics{
 
     private:
         // 计算广义惯性矩阵
-        inline void CalMass();
+        void CalMass();
 
         // 计算惯性系下的重力旋量
-        inline Twist CalGravity(const Motion::TrajectoryGenerator &generator);
+        Twist CalGravity(const Motion::TrajectoryGenerator &generator);
 
         double length_;  // 大臂长度
         double r_;  // 大臂半径

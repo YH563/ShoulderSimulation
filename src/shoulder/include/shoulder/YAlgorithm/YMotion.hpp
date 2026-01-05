@@ -12,6 +12,7 @@ namespace Motion{
     using Pose = Sophus::SE3d;
     using Rotation = Sophus::SO3d;
     using Twist = Sophus::Vector6d;
+    using Vector3d = Eigen::Vector3d;
 
     class TrajectoryGenerator{ 
     public:
@@ -55,21 +56,21 @@ namespace Motion{
 
     private:
         // 计算归一化参数s
-        inline double GetS(double t) const{
+        double GetS(double t) const{
             return 10 * (std::pow(t, 3) / std::pow(totalTime_, 3)) 
             - 15 * (std::pow(t, 4) / std::pow(totalTime_, 4)) 
             + 6 * (std::pow(t, 5) / std::pow(totalTime_, 5));
         }
 
         // 计算归一化参数s的一阶导
-        inline double GetS_dot(double t) const{
+        double GetS_dot(double t) const{
             return 30 * (std::pow(t, 2) / std::pow(totalTime_, 3)) 
             - 60 * (std::pow(t, 3) / std::pow(totalTime_, 4)) 
             + 30 * (std::pow(t, 4) / std::pow(totalTime_, 5));
         }
 
         // 计算归一化参数s的二阶导
-        inline double GetS_dot_double(double t) const{
+        double GetS_dot_double(double t) const{
             return 60 * (std::pow(t, 1) / std::pow(totalTime_, 3)) 
             - 180 * (std::pow(t, 2) / std::pow(totalTime_, 4)) 
             + 120 * (std::pow(t, 3) / std::pow(totalTime_, 5));
