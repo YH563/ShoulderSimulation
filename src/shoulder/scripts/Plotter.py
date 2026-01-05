@@ -31,12 +31,7 @@ class Plotter(Node):
     # 显示图片的函数
     def display_image(self, image_path):
         try:
-            # 根据操作系统选择合适的命令
-            if sys.platform.startswith('darwin'):  # macOS
-                subprocess.run(['open', image_path])
-            elif sys.platform.startswith('win'):   # Windows
-                os.startfile(image_path)  # Windows特有的方法
-            elif sys.platform.startswith('linux'): # Linux
+            if sys.platform.startswith('linux'):
                 subprocess.run(['xdg-open', image_path])
             else:
                 self.get_logger().warn(f"不支持的操作系统平台: {sys.platform}，无法自动打开图片")
@@ -51,18 +46,30 @@ class Plotter(Node):
         data_matrix = data.values
         data_matrix = data_matrix.transpose()
         self.data_matrix = data_matrix
-        curve_png = self.plot_curve()
+        png_path = self.myplot()
+        curve_png = png_path.split('\n')[0]
+        force_png = png_path.split('\n')[1]
 
         # 使用线程异步显示图片，避免阻塞服务
         display_thread = threading.Thread(target=self.display_image, args=(curve_png,))
         display_thread.daemon = True  
         display_thread.start()
+        display_thread_force = threading.Thread(target=self.display_image, args=(force_png,))
+        display_thread_force.daemon = True
+        display_thread_force.start()
 
         response.success = True
-        response.message = f"Curve Plot saved to {curve_png}"
-        response.image_path = curve_png
+        response.message = f"Curve Plot saved to {curve_png}, Force Plot saved to {force_png}"
+        response.image_path = png_path
 
         return response
+
+    def myplot(self):
+        curve_png = self.plot_curve()
+        force_png = self.plot_force()
+        png_path = f"{curve_png}\n{force_png}"
+        return png_path
+
 
     # 绘制运动曲线
     def plot_curve(self):
@@ -89,10 +96,13 @@ class Plotter(Node):
         for i in range(len(x)-1):
             ax3d.plot(x[i:i+2], y[i:i+2], z[i:i+2], 
                      color=colors[i], linewidth=2, alpha=0.8)
-        ax3d.set_title('3D End-Effector Trajectory')
+        ax3d.set_title('3D End-Effector Trajectory', fontsize=14, pad=-5)
         ax3d.set_xlabel('X (m)', fontsize=12, labelpad=10)
         ax3d.set_ylabel('Y (m)', fontsize=12, labelpad=10)
         ax3d.set_zlabel('Z (m)', fontsize=12, labelpad=10)
+        ax3d.xaxis.set_tick_params(labelsize=8)
+        ax3d.yaxis.set_tick_params(labelsize=8)
+        ax3d.zaxis.set_tick_params(labelsize=8)
         ax3d.xaxis.pane.fill = False
         ax3d.yaxis.pane.fill = False
         ax3d.zaxis.pane.fill = False
@@ -128,7 +138,38 @@ class Plotter(Node):
         plt.close(fig)
         
         return png_path
+    
+    # 绘制力和力矩图
+    def plot_force(self):
+        fig, axs = plt.subplots(2, 3, figsize=(14, 10))
+        time = self.data_matrix[0]
+        y_list = self.data_matrix[4:10]
+        titles = ['Torque X', 'Torque Y', 'Torque Z', 'Force X', 'Force Y', 'Force Z']
+        colors = ['r', 'g', 'b', 'c', 'm', 'y']
+        plt.subplots_adjust(left=0.1,    
+                       right=0.95,   
+                       bottom=0.1,  
+                       top=0.95,     
+                       wspace=0.3,  
+                       hspace=0.4)  
+        for i in range(6):
+            axs[i // 3, i % 3].plot(time, y_list[i], color=colors[i], label=titles[i])
+            axs[i // 3, i % 3].set_title(titles[i], weight='bold')
+            axs[i // 3, i % 3].set_xlabel('Time (s)')
+            ylabel = "Torque (Nm)" if i < 3 else "Force (N)"
+            axs[i // 3, i % 3].set_ylabel(ylabel)
+            axs[i // 3, i % 3].legend(loc="upper right")
+            axs[i // 3, i % 3].grid(alpha=0.3)
+        
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        png_path = os.path.join(script_dir, "force.png")
+        plt.savefig(png_path, dpi=300, bbox_inches='tight')
+        plt.tight_layout()
+        self.get_logger().info("绘图完成。")
+        plt.close(fig)
 
+        return png_path
+    
 
 def main(args=None):
     rclpy.init(args=args)
